@@ -1,0 +1,11 @@
+--- ../src/man.c	2016-04-28 13:44:21.452725265 -0500
++++ ./src/man.c	2016-04-28 13:44:21.452725265 -0500
+@@ -976,7 +976,7 @@
+ 
+ 	  tmp_section_list[i++] = my_strdup (p);
+ 
+-	  if (end == NULL || i+1 == sizeof(tmp_section_list))
++	  if (end == NULL || i+1 == sizeof(tmp_section_list)/sizeof(char*))
+ 	       break;
+      }
+ 

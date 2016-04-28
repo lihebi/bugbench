@@ -1,0 +1,15 @@
+This directory contains the patched version.
+
+To apply this patch, use
+
+#+BEGIN_EXAMPLE
+patch -p2 <patch.diff -d ../src
+#+END_EXAMPLE
+
+This will patch, in this benchmark, the =man.c= file.
+
+To reverse (unapply) this patch:
+
+#+BEGIN_EXAMPLE
+patch -p2 -R <patch.diff -d ../src
+#+END_EXAMPLE
