@@ -1,0 +1,9 @@
+#+TITLE: My Copy of Bugbench
+
+Bugbench is a benchmark suite created by Shan Lu.
+
+* Why creating this repo?
+- I need to access bugbench many times
+- The copy I got from my advisor needs some modification to run on Linux
+- I need take some notes
+- I want to create bug signature along with it
