@@ -1,0 +1,204 @@
+diff --git a/src/manfile.c b/helium/src/manfile.c
+index a88476c..b3f5ddc 100755
+--- a/src/manfile.c
++++ b/helium/src/manfile.c
+@@ -34,6 +34,8 @@ append(struct manpage **head, struct manpage *a) {
+ 
+ static int
+ my_lth(char *s) {
++  printf("my_lth, crash point!\n");
++  // FINALLY this is the bug crash location!
+      return s ? strlen(s) : 0;
+ }
+ 
+@@ -52,6 +54,7 @@ my_lth(char *s) {
+ static char **
+ glob_for_file_ext_glob (char *dir, char *sec, char *name, char *ext, char *hpx,
+ 			int glob, int type) {
++  printf("entering glob_for_file_ext_glob\n");
+      char *pathname;
+      char *p;
+      char **names;
+@@ -63,15 +66,15 @@ glob_for_file_ext_glob (char *dir, char *sec, char *name, char *ext, char *hpx,
+      if (!pathname)
+ 	  return 0;
+ 
+-     sprintf (pathname, "%s/%s%s%s/%s.%s%s",
+-	      dir, (type == TYPE_SCAT) ? "cat" : "man", sec, hpx,
+-	      name, ext, glob ? "*" : "");
++     /* sprintf (pathname, "%s/%s%s%s/%s.%s%s", */
++     /* 	      dir, (type == TYPE_SCAT) ? "cat" : "man", sec, hpx, */
++     /* 	      name, ext, glob ? "*" : ""); */
+ 
+      if (type == TYPE_CAT) {
+           p = to_cat_filename(pathname, 0, standards);
+           if (p) {
+-	       free(pathname);
+-               pathname = p;
++	       /* free(pathname); */
++               /* pathname = p; */
+           } else {
+                sprintf (pathname, "%s/cat%s%s/%s.%s%s",
+                         dir, sec, hpx, name, ext, glob ? "*" : "");
+@@ -79,29 +82,19 @@ glob_for_file_ext_glob (char *dir, char *sec, char *name, char *ext, char *hpx,
+      }
+ 
+      names = glob_filename (pathname);
+-     if (names == (char **) -1)		/* file system error; print msg? */
+-	  names = 0;
++     /* if (names == (char **) -1)		/\* file system error; print msg? *\/ */
++     /* 	  names = 0; */
+      return names;
+ }
+ 
+ static char **
+ glob_for_file_ext (char *dir, char *sec, char *name, char *ext, int type) {
++  printf("enter glob_for_file_ext\n");
+      char **names, **namesglob;
+      char *hpx = ((standards & DO_HP) ? ".Z" : "");
+ 
+      namesglob = glob_for_file_ext_glob(dir,sec,name,ext,hpx,1,type);
+-     if (!namesglob && *hpx) {
+-	  hpx = "";
+-	  namesglob = glob_for_file_ext_glob(dir,sec,name,ext,hpx,1,type);
+-     }
+-     if (!namesglob)
+-	  return 0;
+-     if (*namesglob) {
+-	  /* we found something - try to get a more precise match */
+-	  names = glob_for_file_ext_glob(dir,sec,name,ext,hpx,0,type);
+-	  if (names && *names)
+-	       namesglob = names;
+-     }
++  printf("leave glob_for_file_ext\n");
+      return namesglob;
+ }
+ 
+@@ -110,35 +103,9 @@ glob_for_file_ext (char *dir, char *sec, char *name, char *ext, int type) {
+  */
+ static char **
+ glob_for_file (char *dir, char *sec, char *name, int type) {
++  printf("enter glob_for_file\n");
+      char **names;
+-
+-     if (standards & DO_IRIX) {
+-	  /* try first without `sec' extension */
+-	  /* maybe this should be done only for cat pages? */
+-	  return glob_for_file_ext (dir, sec, name, "", type);
+-     }
+-
+-     /* try /usr/X11R6/man/man3x/XSetFont.3x */
+      names = glob_for_file_ext (dir, sec, name, sec, type);
+-
+-     if (!names)
+-	  return 0;		/* out-of-memory or error */
+-
+-     /* sometimes the extension is only a single digit */
+-     if (!*names && isdigit(sec[0]) && sec[1] != 0) {
+-	  char ext[2];
+-	  ext[0] = sec[0];
+-	  ext[1] = 0;
+-	  names = glob_for_file_ext (dir, sec, name, ext, type);
+-     }
+-
+-     if (!names)
+-	  return 0;		/* out-of-memory or error */
+-
+-     /* or the extension could be .man */
+-     if (!*names)
+-	  names = glob_for_file_ext (dir, sec, name, "man", type);
+-
+      return names;
+ }
+ 
+@@ -155,35 +122,15 @@ manfile_from_sec_and_dir(char *dir, char *sec, char *name, int flags) {
+      int types[3] = { TYPE_MAN, TYPE_CAT, TYPE_SCAT };
+      int i, type;
+ 
++	  printf("manfile from sec and dir\n");
+      for (i=0; i<3; i++) {
+ 	  type = types[i];
+ 
+-	  /* If convert_to_cat() is trivial, TYPE_CAT and TYPE_SCAT
+-	     are the same thing. */
+-	  if ((type == TYPE_CAT) && (flags & TYPE_SCAT) && !standards)
+-	       continue;
+-
+ 	  if (flags & type) {
+ 	       names = glob_for_file (dir, sec, name, type);
+-	       if (names) {
+-		    for (np = names; *np; np++) {
+-			 p = (struct manpage *) malloc(sizeof(*p));
+-			 if (!p)
+-			      break; 	/* %% perhaps print msg, free names */
+-			 p->filename = *np;
+-			 p->type = type;
+-			 p->next = 0;
+-			 append(&res, p);
+-			 if (res && (flags & ONLY_ONE_PERSEC))
+-			      break;
+-		    }
+-		    free(names);
+-	       }
+ 	  }
+-
+-	  if (res)
+-	       return res;
+      }
++	  printf("end man from sec and dir\n");
+ 
+      return res;
+ }
+@@ -196,23 +143,12 @@ static struct manpage *
+ manfile_from_section(char *name, char *section, int flags, char **manpath) {
+      char **mp;
+      struct manpage *res = 0;
+-
++     printf("manfile_from_section\n");
+      for (mp = manpath; *mp; mp++) {
+ 	  append(&res, manfile_from_sec_and_dir(*mp, section, name, flags));
+-	  if (res && (flags & ONLY_ONE_PERSEC))
+-	       break;
+-     }
+-     if (res == NULL && isdigit(section[0]) && section[1]) {
+-	  char sec[2];
+-
+-	  sec[0] = section[0];
+-	  sec[1] = 0;
+-	  for (mp = manpath; *mp; mp++) {
+-	       append(&res, manfile_from_sec_and_dir(*mp, sec, name, flags));
+-	       if (res && (flags & ONLY_ONE_PERSEC))
+-		    break;
+-	  }
+      }
++     printf("return of manfile from secton\n");
++
+      return res;
+ }
+ 
+@@ -230,21 +166,14 @@ manfile(char *name, char *section, int flags,
+ 	char *((*tocat)(char *man_filename, char *ext, int flags))) {
+      char **sl;
+      struct manpage *res;
++     	  printf("inside manpage\n");
+ 
+-     standards = (flags & (FHS | FSSTND | DO_HP | DO_IRIX));
+-     to_cat_filename = tocat;
+ 
+-     if (!name || !manpath)	/* error msg? */
+-	  res = 0;
+-     else if (section)
+-	  res = manfile_from_section(name, section, flags, manpath);
+-     else if (sectionlist) {
+-	  res = 0;
++     /* standards = (flags & (FHS | FSSTND | DO_HP | DO_IRIX)); */
++     /* to_cat_filename = tocat; */
++
+ 	  for (sl = sectionlist; *sl; sl++) {
+ 	       append(&res, manfile_from_section(name, *sl, flags, manpath));
+-	       if (res && (flags & ONLY_ONE))
+-		    break;
+ 	  }
+-     }
+      return res;
+ }
