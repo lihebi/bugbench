@@ -1,0 +1,33 @@
+* man-1.5h1
+program description:
+---------------------
+(Red Hat Linux util) man, get on-line manuals
+man <command/file...>
+man [-S section list] <command/file...>
+
+bug explanation:
+---------------------
+Static stack array overflow bug
+man.c line973--line981 in get_section_list(void){}
+static array tmp_section_list will be overflowed in this for-loop
+
+The bug is caused by the wrong loop-exit condition on line 979,
+which should be "if(...sizeof(tmp_section_list)/sizeof(char*))".
+The condition in the source code is 4 times larger than what it should be. 
+
+bug triggering inputs:
+---------------------
+here we use
+man -S :::::::::::::: ... : ls (more than 100 ':') as bug triggering input.
+(refer to script/run-bug)
+
+correct inputs:
+---------------------
+For comparison, we use
+man -S 1:2 ls as good input
+(refer to script/run-normal)
+
+bug detection preliminary results:
+---------------------
+Purify, Valgrind, CCured can all detect the bug.
+(It may require some effort to tune the code to work through Cured)
