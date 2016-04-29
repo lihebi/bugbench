@@ -1,0 +1,2 @@
+../src/./compress ../inputs/input.source
+../src/./compress -d ../inputs/input.source
