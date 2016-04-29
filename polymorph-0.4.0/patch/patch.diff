@@ -1,5 +1,13 @@
-119a120,123
-> 			  if (strlen(optarg) >= sizeof(target)) {
-> 			    fprintf(stderr, "file name too long [by patch]\n");
-> 			    exit(1);
-> 			  }
+--- ../src/polymorph.c	2016-04-28 23:09:28.304851451 -0500
++++ ./src/polymorph.c	2016-04-28 23:18:25.759694544 -0500
+@@ -117,6 +117,10 @@
+ 				clean = 1;
+ 				break;
+ 			case 'f':
++			  if (strlen(optarg) >= sizeof(target)) {
++			    fprintf(stderr, "file name too long [by patch]\n");
++			    exit(1);
++			  }
+ 				strcpy( target, optarg );
+ 				break;
+ 			case 'h':

@@ -6,7 +6,7 @@
 # 
 #
 
-OPTS    := -O2 -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -finline-limit=1800 
+OPTS    := -O2 -g -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -finline-limit=1800 
 OPTS    += -frename-registers -finline-functions -funroll-loops
 OPTS    += -fgcse -fgcse-lm -fgcse-sm 
 
