@@ -11,6 +11,7 @@ the =newadd/= directory contains the final bug signature.
 ** The test approach is:
 1. =./run-bug= script (run with bug triggering input) still fail
 2. *the failure stack trace is the same* as original program (with help of gdb)
+   The symptom should not change, e.g. from crash to infinite loop.
 3. the =./run-normal= script (run with correct input) still success:
   1. does not change behavior
   2. does not output warning such as "warning: no parameter provided, skip", etc.
