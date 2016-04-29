@@ -1,0 +1,23 @@
+--- ../src/bc/bc.c	2016-04-28 23:30:03.839272395 -0500
++++ src/bc/bc.c	2016-04-28 23:30:03.871272558 -0500
+@@ -1422,7 +1422,7 @@
+ {
+ 			      /* Check auto list against parameter list? */
+ 			      check_params (yyvsp[-5].a_value,yyvsp[0].a_value);
+-			      sprintf (genstr, "F%d,%s.%s[",
++			      int n = snprintf (genstr, sizeof(genstr), "F%d,%s.%s[",
+ 				       lookup(yyvsp[-7].s_value,FUNCTDEF), 
+ 				       arg_str (yyvsp[-5].a_value), arg_str (yyvsp[0].a_value));				       //add by shan
+ /*				printf("shan: in function\n"); 
+@@ -1431,6 +1431,11 @@
+ 				printf("genstr's length is %d\n",strlen(genstr));
+ 				printf("genstr is: %s\n",genstr);*/
+ 
++			      if (n < 0 || n > sizeof(genstr)) {
++				fprintf(stderr, "buffer size not enough [by patch]\n");
++				exit(1);
++			      }
++
+ 			      generate (genstr);
+ 			      free_args (yyvsp[-5].a_value);
+ 			      free_args (yyvsp[0].a_value);
