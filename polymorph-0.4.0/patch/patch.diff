@@ -1,0 +1,5 @@
+119a120,123
+> 			  if (strlen(optarg) >= sizeof(target)) {
+> 			    fprintf(stderr, "file name too long [by patch]\n");
+> 			    exit(1);
+> 			  }
