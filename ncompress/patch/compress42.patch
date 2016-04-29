@@ -1,0 +1,13 @@
+--- src/compress42.c	2016-04-27 11:53:19.136160394 -0500
++++ compress42.patched.c	2016-04-27 11:57:28.023201141 -0500
+@@ -889,6 +889,10 @@
+ 		int		fdout;
+ 		char	tempname[MAXPATHLEN];
+ 
++		if (strlen(*fileptr) >= sizeof(tempname)) {
++		  fprintf(stderr, "file name too long [by patch]\n");;
++		  exit(1);
++		}
+ 		strcpy(tempname,*fileptr);
+ 		//<---memory corruption happens here in strcpy
+ 		errno = 0;
