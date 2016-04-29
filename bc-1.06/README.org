@@ -1,0 +1,43 @@
+#+TITLE: bc readme by Hebi
+
+This benchmark is too complicated. Skip for now.
+
+The compilation for bc is pretty strange.
+You need first go into the src/lib folder and =make=.
+Then, go to =src/bc/= folder and =make=.
+The generated =src/bc/lib-math.h= is not correct, and should be checked out to this version in the repo.
+
+One example of the stack trace is useful:
+
+The original crash stack is
+#+BEGIN_EXAMPLE
+#11 yyparse () at bc.y:306
+#12 0x0000000000401077 in main (argc=<optimized out>, argv=<optimized out>) at main.c:215
+#+END_EXAMPLE
+
+
+This is the trace if I delete
+
+#+BEGIN_SRC C
+  init_storage();
+  init_load();
+#+END_SRC
+
+from =main.c= in main function
+
+#+BEGIN_EXAMPLE
+rogram terminated with signal SIGSEGV, Segmentation fault.
+#0  clear_func (func=func@entry=0) at storage.c:202
+202       if (f->f_autos != NULL)
+#0  clear_func (func=func@entry=0) at storage.c:202
+#1  0x00000000004093bb in init_load () at load.c:45
+#2  0x000000000041062b in init_gen () at util.c:254
+#3  0x0000000000401047 in main (argc=<optimized out>, argv=<optimized out>) at main.c:183
+#+END_EXAMPLE
+
+Note also, the =bc.y:306= in the trace is actually in =bc.c=, but modified by line control.
+After all =bc.c= is generated from =bc.y=.
+
+This benchmark also shows, when I delete some correct context, the symptom will be:
+- change of the stack
+- infinite loop. e.g. if I delete ~parse_args (argc, argv);~ line in =main.c=.
