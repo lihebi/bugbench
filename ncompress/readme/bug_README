@@ -1,0 +1,37 @@
+* ncompress-4.2.4
+program description:
+---------------------
+(Red Hat Linux util) compression and decompression program:
+compress <filename>	(filename.Z is generated)
+compress -d <filename>
+
+
+bug explanation:
+--------------------
+Stack array overflow bug
+compress42.c(line 896) in function comprexx(char **fileptr)
+             char  tempname[MAXPATHLEN];
+	     strcpy(tempname,*fileptr); 
+	     
+   Fileptr is pointing to the filename in input argument.
+   Long input filename would cause tempname overflow.
+
+   Since tempname is a (static) stack array, overflowing it
+   may cause stack return address overwritten.
+
+bug triggering input:
+---------------------
+Input in script/run-bug can cause application crash with core dump.
+However, with input files with different length, there are different symptom:
+no failure, infinite loop, segmentation fault, etc.
+
+correct inputs:
+--------------------
+The input files in input/ folder are copied from SPEC95 164.gzip
+
+bug detection preliminary results:
+--------------------
+purify and valgrind (the version I used) can not catch the bug, if there is
+  no crash, even if the array is overflowed. They will report: jump to invalid 
+  address, when system crashes, which is not very useful. 
+ccured can point out the root cause.
