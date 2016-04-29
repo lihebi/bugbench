@@ -1,2 +1,10 @@
 *~
 *.o
+
+GPATH
+GTAGS
+GRTAGS
+GSYMS
+
+merge.class
+\#*\#

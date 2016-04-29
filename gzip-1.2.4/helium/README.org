@@ -1,0 +1,44 @@
+#+TITLE: Bug signature
+
+The =addition/= folder is a failure try to add from scratch.
+
+Then deletion is performed to =deletion/= folder.
+At the last of deletion, I feel it's the time to use "addition" again from current "deletion",
+to merge all the codes into one file (actually get rid of other files and the makefile).
+
+the =newadd/= directory contains the final bug signature.
+
+The test approach is:
+1. =./run-bug= script (run with bug triggering input) still fail
+2. the failure stack trace is the same as original program (with help of gdb)
+3. the =./run-normal= script (run with correct input) still success:
+  1. does not change behavior
+  2. does not output warning such as "warning: no parameter provided, skip", etc.
+
+The backtrace outputed by gdb is like:
+#+BEGIN_EXAMPLE
+#5  0x0000000000400688 in strcpy (__src=<optimized out>, __dest=0x601080 <ifname> 'a' <repeats 200 times>...) at /usr/include/x86_64-linux-gnu/bits/string3.h:110
+No locals.
+#6  get_istat (sbuf=0x601480 <istat>, iname=<optimized out>) at gzip.c:46
+No locals.
+#7  treat_file (iname=<optimized out>) at gzip.c:38
+No locals.
+#8  main (argc=2, argv=<optimized out>) at gzip.c:66
+        file_count = <optimized out>
+#+END_EXAMPLE
+
+Every time after deletion of some chunk of code, do the above tests.
+
+The deletion order is done my manual judgment.
+The human intelligence process is documented here.
+
+1. I first identify the function involved in the crash stack trace, and delete from those procedures
+2. look at the bug triggering input. If no special command line arguments (e.g. -x) involved, try delete the big if branch to handle those arguments.
+   Alternatively if there are command line arguments involved, I will try to delete all other command line option handling code.
+3. in each procedure on the stack trace, try delete everything after the bug triggering line
+   (this can be the final triggering line such as strcpy, or the call to another function in which the bug is triggered).
+4. try delete some chunk in those procedures before the bug triggering line
+5. remove local procedures that turns out to be unused (by help of compiler warning message)
+6. after extensively try to delete code in the files containing the stack trace, remove the code in other files aggressively.
+   (These unused functions will not be warned by compiler because they are exposed by header file)
+7. if the result program is small enough, move those relevant staff into a new separate file, and fix syntax errors by adding more supporting code
