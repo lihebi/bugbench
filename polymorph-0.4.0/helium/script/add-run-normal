@@ -1,0 +1,3 @@
+rm -f bbb
+touch BBB
+../addition/polymorph -f BBB 
