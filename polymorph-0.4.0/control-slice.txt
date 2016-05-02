@@ -1,0 +1,3 @@
+=======
+slicing criteria: polymorph.c:120
+/home/hebi/benchmark/bugbench/polymorph-0.4.0/src/polymorph.c	120

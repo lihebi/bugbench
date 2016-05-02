@@ -1,0 +1,3 @@
+=======
+slicing criteria: compress42.c:892
+/home/hebi/benchmark/bugbench/ncompress/src/compress42.c	892

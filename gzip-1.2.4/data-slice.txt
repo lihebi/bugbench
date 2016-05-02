@@ -1,0 +1,3 @@
+=======
+slicing criteria: gzip.c:828
+/home/hebi/benchmark/bugbench/gzip-1.2.4/src/gzip.c	828
