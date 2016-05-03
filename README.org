@@ -28,3 +28,12 @@ Bugbench is a benchmark suite created by Shan Lu.
 | squid-2.3               |               | N/A                |                 |                      |                 | Complicate to run, don't know how to start and connect squid server |
 | cvs-1.11.4              |               | N/A                |                 |                      |                 | Require running cvs server, no exploit-cvs.c file found             |
 
+
+Slicing experiment result
+| benchmark | full slice size | data slice | control slice |
+|-----------+-----------------+------------+---------------|
+| gzip      |            1982 |          1 |            55 |
+| ncompress |             450 |          1 |            63 |
+| polymorph |              20 |          1 |            19 |
+| man       |            1992 |       1206 |            90 |
+
