@@ -4,7 +4,7 @@ Bugbench is a benchmark suite created by Shan Lu.
 
 * Why creating this repo?
 - I need to access bugbench many times
-- The copy I got from my advisor needs some modification to run on Linux
+- The copy I got needs some modification (compiler flags) to run on Linux
 - I need take some notes
 - I want to create bug signature along with it
 
@@ -28,12 +28,48 @@ Bugbench is a benchmark suite created by Shan Lu.
 | squid-2.3               |               | N/A                |                 |                      |                 | Complicate to run, don't know how to start and connect squid server |
 | cvs-1.11.4              |               | N/A                |                 |                      |                 | Require running cvs server, no exploit-cvs.c file found             |
 
+* Directory layout
+In each benchmark directory, the three folders are added by me:
+- =./*slice.txt= slice performed on the property violation line (the criteria file is =./src/slicing-criteria.txt=)
+- =./patch= the patch that can fix the bug
+- =./helium= the folder containing bug signature.
+- =./helium/addition= the bug signature created manually
+- =./helium/slicing= the bug signature created based on slice
 
-Slicing experiment result
-| benchmark | full slice size | data slice | control slice | comment                                    |
-|-----------+-----------------+------------+---------------+--------------------------------------------|
-| gzip      |            1982 |          1 |            55 | data slice is actually the criteria itself |
-| ncompress |             450 |          1 |            63 |                                            |
-| polymorph |              20 |          1 |            19 |                                            |
-| man       |            1992 |       1206 |            90 |                                            |
+* Slicing experiment
+** Overview
+| benchmark |  LOC | full slice size | data slice | control slice | comment                                    |
+|-----------+------+-----------------+------------+---------------+--------------------------------------------|
+| gzip      | 5225 |            1982 |          1 |            55 | data slice is actually the criteria itself |
+| ncompress | 1436 |             450 |          1 |            63 |                                            |
+| polymorph |  404 |              20 |          1 |            19 |                                            |
+| man       | 3036 |            1992 |       1206 |            90 |                                            |
 
+** Conclusion from experiment
+1. all statements in manual created bug signature are in the slice
+2. full slice is much bigger than bug signature
+3. understand the reasons that full slice can not simply built (see next sub-section)
+4. It is possible to /carefully/ remove statements not in slice to make slice built,
+   and can trigger the bug.
+5. The reason for slice to be so big.
+   The reasons can be 1) control slice 2) correct path 3) compute irrelevant results.
+   The first and third reason seem to be primary reasons for these benchmarks.
+
+** Reasons for slice not built
+1. slice will not contain the syntax meaningless constructs, like
+   - parenthesis,
+   - else clause,
+   - multi-line statements.
+   - =do= while
+   These hinder building.
+   The use of AST can help this.
+2. slicing may not include the declaration of a variable, results in compile error.
+3. typedef is not included in slice
+4. Some global variables are not in slice, but is used in many places, including some statements in slice.
+5. if branches contains only one statement, which is also not in slice. Cannot simply delete it
+6. ...
+
+
+# ** Proposed how to use slice, and next step
+# 1. automate manual removing statement process
+# 2. automate slicing built process by using AST level statement removal.
