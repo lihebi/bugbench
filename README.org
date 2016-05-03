@@ -30,10 +30,10 @@ Bugbench is a benchmark suite created by Shan Lu.
 
 
 Slicing experiment result
-| benchmark | full slice size | data slice | control slice |
-|-----------+-----------------+------------+---------------|
-| gzip      |            1982 |          1 |            55 |
-| ncompress |             450 |          1 |            63 |
-| polymorph |              20 |          1 |            19 |
-| man       |            1992 |       1206 |            90 |
+| benchmark | full slice size | data slice | control slice | comment                                    |
+|-----------+-----------------+------------+---------------+--------------------------------------------|
+| gzip      |            1982 |          1 |            55 | data slice is actually the criteria itself |
+| ncompress |             450 |          1 |            63 |                                            |
+| polymorph |              20 |          1 |            19 |                                            |
+| man       |            1992 |       1206 |            90 |                                            |
 
