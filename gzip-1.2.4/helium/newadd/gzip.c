@@ -64,16 +64,8 @@ int main (argc, argv)
     int argc;
     char **argv;
 {
-    int file_count;     /* number of files to precess */
-    strncpy(z_suffix, Z_SUFFIX, sizeof(z_suffix)-1);
-    z_len = strlen(z_suffix);
-    file_count = argc - optind;
-    /* And get to work */
-    if (file_count != 0) {
-        while (optind < argc) {
-	    treat_file(argv[optind++]);
-	}
-    }
-    return exit_code; /* just to avoid lint warning */
+  while (optind < argc) {
+    treat_file(argv[optind++]);
+  }
 }
 
