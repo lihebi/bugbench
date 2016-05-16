@@ -1,0 +1,146 @@
+============
+man
+============
+#define BUFSIZE 8192
+int
+main (int argc, char **argv) {
+     int status = 0;
+     char *nextarg;
+     char *section = 0;
+
+     man_getopt (argc, argv);
+
+     section_list = get_section_list ();
+     
+     while (optind < argc) {
+	  nextarg = argv[optind++];
+	    //<------------segment fault within man~~~
+	  status = man (nextarg, section);
+     }
+     return !status;
+}
+
+static int
+man (char *name, char *section) {
+     int found, type, flags;
+     struct manpage *mp;
+     found = 0;
+     init_manpath();
+     type = TYPE_MAN;
+     flags = type;
+     mp = manfile(name, section, flags, section_list, mandirlist,
+		  convert_to_cat);
+     found = 0;
+     return found;
+}
+
+static char **
+get_section_list (void) {
+     int i;
+     char *p;
+     char *end;
+     static char *tmp_section_list[100];
+     i = 0;
+     for (p = colon_sep_section_list; ; p = end+1) {
+	  if ((end = strchr (p, ':')) != NULL)
+	       *end = '\0';
+	  tmp_section_list[i++] = my_strdup (p);
+	  /* if (end == NULL || i+1 == sizeof(tmp_section_list)/sizeof(char*)) */
+	  if (end == NULL || i+1 == sizeof(tmp_section_list))
+	       break;
+     }
+     tmp_section_list [i] = NULL;
+     return tmp_section_list;
+}
+
+struct manpage *
+manfile(char *name, char *section, int flags,
+        char **sectionlist, char **manpath,
+	char *((*tocat)(char *man_filename, char *ext, int flags))) {
+     char **sl;
+     struct manpage *res;
+	  for (sl = sectionlist; *sl; sl++) {
+	       append(&res, manfile_from_section(name, *sl, flags, manpath));
+	  }
+     return res;
+}
+
+static struct manpage *
+manfile_from_section(char *name, char *section, int flags, char **manpath) {
+     char **mp;
+     struct manpage *res = 0;
+     for (mp = manpath; *mp; mp++) {
+	  append(&res, manfile_from_sec_and_dir(*mp, section, name, flags));
+     }
+     return res;
+}
+
+static struct manpage *
+manfile_from_sec_and_dir(char *dir, char *sec, char *name, int flags) {
+     struct manpage *res = 0;
+     struct manpage *p;
+     char **names, **np;
+     int types[3] = { TYPE_MAN, TYPE_CAT, TYPE_SCAT };
+     int i, type;
+     for (i=0; i<3; i++) {
+	  type = types[i];
+	  if (flags & type) {
+	       names = glob_for_file (dir, sec, name, type);
+	  }
+     }
+     return res;
+}
+
+static char **
+glob_for_file (char *dir, char *sec, char *name, int type) {
+     char **names;
+     names = glob_for_file_ext (dir, sec, name, sec, type);
+     return names;
+}
+
+static char **
+glob_for_file_ext (char *dir, char *sec, char *name, char *ext, int type) {
+     char **names, **namesglob;
+     char *hpx = ((standards & DO_HP) ? ".Z" : "");
+
+     namesglob = glob_for_file_ext_glob(dir,sec,name,ext,hpx,1,type);
+     return namesglob;
+}
+
+static char **
+glob_for_file_ext_glob (char *dir, char *sec, char *name, char *ext, char *hpx,
+			int glob, int type) {
+     char *pathname;
+     char *p;
+     char **names;
+     int len;
+     len = my_lth(dir) + my_lth(sec) + my_lth(hpx) + my_lth(name)
+	  + my_lth(ext) + 8;
+     pathname = (char *) malloc(len);
+     if (!pathname)
+	  return 0;
+     if (type == TYPE_CAT) {
+          p = to_cat_filename(pathname, 0, standards);
+     }
+     names = glob_filename (pathname);
+     return names;
+}
+
+static int
+my_lth(char *s) {
+     return s ? strlen(s) : 0;
+}
+
+static void
+append(struct manpage **head, struct manpage *a) {
+     struct manpage *p;
+     if (a) {
+	  if (*head) {
+	       p = *head;
+	       while(p->next)
+		    p = p->next;
+	       p->next = a;
+	  } else
+	       *head = a;
+     }
+}

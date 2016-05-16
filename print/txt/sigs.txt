@@ -1,0 +1,94 @@
+==========
+GZIP
+==========
+#  define MAX_SUFFIX  30
+char z_suffix[MAX_SUFFIX+1]; /* default suffix (can be set with --suffix) */
+#  define Z_SUFFIX ".gz"
+struct stat istat;         /* status for input file */
+#define OK      0
+#  define MAX_PATH_LEN   1024 /* max pathname length */
+char ifname[MAX_PATH_LEN]; /* input file name */
+int  z_len;           /* strlen(z_suffix) */
+int optind = 0;
+int exit_code = OK;   /* program exit code */
+
+local void treat_file(iname)
+    char *iname;
+{
+    /* Check if the input file is present, set ifname and istat: */
+    if (get_istat(iname, &istat) != OK) return;
+}
+
+local int get_istat(iname, sbuf)
+    char *iname;
+    struct stat *sbuf;
+{
+    strcpy(ifname, iname);
+}
+
+int main (argc, argv)
+    int argc;
+    char **argv;
+{
+  while (optind < argc) {
+    treat_file(argv[optind++]);
+  }
+}
+
+=========
+polymorph
+=========
+#define MAX	2048
+char tmpbuf[MAX], target[MAX], wd[MAX];
+void grok_commandLine(int argc, char *argv[]){
+	int o;
+	while( ( o = getopt( argc, argv, "achtvf:" ) ) != -1 ){
+		switch( o ){
+			case 'f':
+				strcpy( target, optarg );
+				break;
+			default:
+				exit( 0 );
+		}
+	}
+}
+int main(int argc, char *argv[]){
+  grok_commandLine( argc, argv );
+  return( 0 );
+}
+
+========
+compress
+========
+
+#define MAXPATHLEN 1024		/* MAXPATHLEN - maximum length of a pathname we allow 	*/
+void
+main(argc, argv)
+	REG1	int 	 argc;
+	REG2	char	*argv[];
+	{
+    	REG3	char		**filelist;
+		REG4	char		**fileptr;
+	filelist = fileptr = (char **)malloc(argc*sizeof(fileptr[0]));
+    	for (argc--, argv++; argc > 0; argc--, argv++) {
+			if (**argv == '-')
+			{/* A flag argument */ while (*++(*argv)) {/* Process all flags in this arg */}}
+			else
+			{
+		    	*fileptr++ = *argv;	/* Build input file list */
+		    	*fileptr = NULL;
+			}
+    	}
+    	if (*filelist != NULL) {
+        	for (fileptr = filelist; *fileptr; fileptr++)
+			comprexx(fileptr);
+    	}
+}
+
+
+void
+comprexx(fileptr)
+	char	**fileptr; {
+		char	tempname[MAXPATHLEN];
+		strcpy(tempname,*fileptr);
+	}

@@ -9,3 +9,7 @@ GSYMS
 
 merge.class
 \#*\#
+
+.DS_Store
+*.tex
+*.pdf
