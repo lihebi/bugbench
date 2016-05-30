@@ -5,12 +5,16 @@
 # If NATIVE is defined, the native gcc compiler is used. The same otimization options are used
 # 
 #
-# OPTS    := -O2 -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -finline-limit=1800 
+# OPTS    := -O2
+# OPTS += -fomit-frame-pointer
+# OPTS += -fno-exceptions
+# OPTS += -fno-strict-aliasing
+# OPTS += -finline-limit=1800 
 # OPTS    += -frename-registers -finline-functions -funroll-loops
 # OPTS    += -fgcse -fgcse-lm -fgcse-sm
 
 # Added by Hebi Li
-OPTS := -g -O0
+OPTS := -g -O1 # if I use O0, the bug will not occur!
 
 DECLS   += -DSTDC_HEADERS -DPOSIX -DDO_COMPRESS -DGREPSILENT=\'q\'
 
