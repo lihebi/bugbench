@@ -1,2 +1,5 @@
 src/gzip
 src/merge.class
+
+# generated file when running testing script
+aaa.gz
