@@ -5,9 +5,12 @@
 # If NATIVE is defined, the native gcc compiler is used. The same otimization options are used
 # 
 #
-OPTS    := -O2 -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -finline-limit=1800 
-OPTS    += -frename-registers -finline-functions -funroll-loops
-OPTS    += -fgcse -fgcse-lm -fgcse-sm 
+# OPTS    := -O2 -fomit-frame-pointer -fno-exceptions -fno-strict-aliasing -finline-limit=1800 
+# OPTS    += -frename-registers -finline-functions -funroll-loops
+# OPTS    += -fgcse -fgcse-lm -fgcse-sm
+
+# Added by Hebi Li
+OPTS := -g -O0
 
 DECLS   += -DSTDC_HEADERS -DPOSIX -DDO_COMPRESS -DGREPSILENT=\'q\'
 
