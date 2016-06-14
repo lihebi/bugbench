@@ -1,0 +1,10 @@
+#+TITLE: Bug Sig experiment Setup
+
+#+BEGIN_SRC shell
+cd bugsig
+cp ../src/compress42.c compress42.c.orig
+./transform # generate compress42.bugsig.c
+cd ..
+helium --create-snippet-db bugsig/
+helium -s snippets bugsig --print="ci,ce,col"
+#+END_SRC
