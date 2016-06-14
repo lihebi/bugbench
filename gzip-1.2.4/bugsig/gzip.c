@@ -171,10 +171,10 @@ typedef RETSIGTYPE (*sig_type) OF((int));
 #  define SEEK_END 2
 #endif
 
-#ifdef NO_OFF_T
-  typedef long off_t;
-  off_t lseek OF((int fd, off_t offset, int whence));
-#endif
+// #ifdef NO_OFF_T
+//   typedef long off_t;
+//   off_t lseek OF((int fd, off_t offset, int whence));
+// #endif
 
 /* Separator for file name parts (see shorten_name()) */
 #ifdef NO_MULTIPLE_DOTS

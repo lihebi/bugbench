@@ -23,6 +23,9 @@ $SED -E -e "828 i\\
 $SED -E -e "707 s/^(.*)$/\/\/ \1/" gzip.c -i
 $SED -E -e "709,711 s/^(.*)$/\/\/ \1/" gzip.c -i
 
+$SED -E -e "174,177 s/^(.*)$/\/\/ \1/" gzip.c -i
+
+
 cp ../src/trees.c .
 
 # remove a conditional compilation
