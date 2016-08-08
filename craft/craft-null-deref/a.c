@@ -24,7 +24,6 @@ void bar(demo *z, demo *x) {
   } else {
     y = x->f;
   }
-  // @HeliumStmt
   *y = a;
 }
 

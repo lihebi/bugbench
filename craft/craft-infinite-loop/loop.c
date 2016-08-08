@@ -66,7 +66,6 @@ char *get_tag(char *tag, int tagbuf_len)
 
   term = c;
   // precondition: buf[tagbuf_len = '\']
-  // @HeliumLoop
   while (1) {
     // loop invariant: t != tag + tagbuf_len
     c = nondet_char();

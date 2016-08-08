@@ -11,7 +11,6 @@
 char *global_pointer;
 void bar() {
   if (global_pointer != NULL) {
-    // @HeliumStmt
     free (global_pointer);
   }
 }
