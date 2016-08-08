@@ -1,0 +1,43 @@
+#+TITLE: Double Free Benchmark
+
+* Expected Dynamic Properties
+Invariant:
+pointer address is in free-d list.
+
+# Transfer function:
+# that address is free-d
+
+Pre-condition: None!
+Or check pre-condition constraints.
+
+
+
+
+* Changes needed for Helium Framework
+
+** dynamically collect the free-d address
+During output of =main.c= file,
+after each free() statement in the source code, instrument
+- Locate the call to free on ASTNode
+- When output that node, output the address
+- The output format should be: 
+  =printf("freed-addr : %p\n", &xxx);= // note: use : instead of =
+#+BEGIN_SRC xml
+  <call>
+    <name>free</name>
+    <argument_list><argument>
+      <expr><name>xxx</name></expr>
+    </argument>
+    </argument_list>
+  </call>
+#+END_SRC
+
+In the analyze of =analyzer.cc=, the output, collect all the =freed-addr=,
+into a =freed-list=.
+
+Construct a field as whether the corresponding address is in =freed-list=.
+
+* Used configuration
+#+BEGIN_EXAMPLE
+helium -s snippets/ --print="ci,ce,col,io,ana,t" double-free/ --conf="instrument-address=true"
+#+END_EXAMPLE

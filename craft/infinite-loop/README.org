@@ -1,0 +1,13 @@
+#+TITLE: Infinite Loop Benchmark
+
+* Expected Dynamic Property
+
+Invariant:
+- t != tag + tagbuf_len
+
+No Transfer function and pre-condition.
+
+* Changes needed for Helium Framework
+
+- Extract Loop Invariants
+- Extract Loop Jump Out condition

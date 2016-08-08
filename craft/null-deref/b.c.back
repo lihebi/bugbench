@@ -1,0 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+char* foo(int size) {
+  char *buf;
+  if (size == 0) {
+    return NULL;
+  }
+  buf = (char*)malloc(size);
+  // @DISABLE_HeliumStmt
+  buf[0] = 0;
+  return buf;
+}
+
+int main(int argc, char* argv[]) {
+  foo(atoi(argv[1]));
+}

@@ -1,0 +1,27 @@
+#+TITLE: NULL Dereference benchmark
+
+
+Expected Output:
+
+Invariant: y = NULL
+
+Precondition:
+b = true
+x != NULL
+x->f = NULL
+z != NULL
+
+
+
+And what's the transfer?
+&y = &x->f
+
+
+One problem: the transfer function is not able to get dynamically: x->f = NULL, y = NULL, but we cannot get the address of a NULL pointer.
+
+The command to run this:
+#+BEGIN_EXAMPLE
+helium -s snippets/ null-deref --print="ci,ce,col,io,ana" --conf="test-number=100,test-global-variable=true,instrument-address=true"
+#+END_EXAMPLE
+
+The oracle is not fully automatic.
